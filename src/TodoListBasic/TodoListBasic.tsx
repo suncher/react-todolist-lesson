@@ -1,27 +1,38 @@
-import lib from "@ant-design/icons";
+
 import React, { useState } from "react";
+import uuid from "react-uuid";
+
+interface ListItem {
+  id: string;
+  label: String;
+}
 
 const TodoListBasic = () => {
+ 
   const optionValue: Array<{ value: string; label: string }> = [
     { value: "todo", label: "To do" },
     { value: "inProgress", label: "In Progress" },
     { value: "done", label: "Done" },
   ];
   const [tasks, setTasks] = useState<String>("");
-  const [todo, setTodo] = useState<String[]>([]);
-  const [inProgress, setInProgress] = useState<String[]>([]);
-  const [done, setDone] = useState<String[]>([]);
+  const [todo, setTodo] = useState<ListItem[]>([]);
+  const [inProgress, setInProgress] = useState<ListItem[]>([]);
+  const [done, setDone] = useState<ListItem[]>([]);
   const [progressStatus, setProgressStatus] = useState<String>("todo");
   const handleAddToDoOnClick = () => {
+    const newItem = {
+      id: uuid(),
+      label: tasks,
+    };
     switch (progressStatus) {
       case "todo":
-        setTodo([...todo, tasks]);
+        setTodo([...todo, newItem]);
         break;
       case "inProgress":
-        setInProgress([...inProgress, tasks]);
+        setInProgress([...inProgress, newItem]);
         break;
       case "done":
-        setDone([...done, tasks]);
+        setDone([...done, newItem]);
         break;
       default:
         break;
@@ -43,24 +54,24 @@ const TodoListBasic = () => {
           <div>
             <h3>To Do</h3>
             <ul>
-              {todo.map((value) => (
-                <li>{value}</li>
+              {todo.map(({id,label}) => (
+                <li key={id}>{label}</li>
               ))}
             </ul>
           </div>
           <div>
             <h3>In Progress</h3>
             <ul>
-              {inProgress.map((value) => (
-                <li>{value}</li>
+              {inProgress.map(({id,label}) => (
+                <li key={id}>{label}</li>
               ))}
             </ul>
           </div>
           <div>
             <h3>Done</h3>
             <ul>
-              {done.map((value) => (
-                <li>{value}</li>
+              {done.map(({id,label}) => (
+                <li key={id}>{label}</li>
               ))}
             </ul>
           </div>
