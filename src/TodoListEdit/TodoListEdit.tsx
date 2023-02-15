@@ -94,7 +94,7 @@ const TodoListEdit = () => {
           {newColumnOfCategory.map((colCategory) => {
             return (
               <div>
-                <Column  key={colCategory.id} colCategory={colCategory} handleDeleteColumn={handleDeleteColumn}  openEditColumnModal={showEditColumnModal} openEditItemModal={showEditItemModal} handleDeleteItem={handleDeleteItem} />
+                <Column colCategory={colCategory} handleDeleteColumn={handleDeleteColumn}  openEditColumnModal={showEditColumnModal} openEditItemModal={showEditItemModal} handleDeleteItem={handleDeleteItem} />
                 <ColumnModal isModalOpen={isModalEditColumnVisible} />
                 <ItemModal isModalOpen={isModalEditTaskVisible} />
               </div>

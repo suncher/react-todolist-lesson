@@ -15,7 +15,7 @@ const Column = ({ colCategory, handleDeleteItem,handleDeleteColumn,openEditColum
 
     return (
         <List  
-            
+            key={colCategory.id}
             header={
                 <Columnheader colCategory={colCategory} 
                 handleOpenEditColumnModal={openEditColumnModal}
