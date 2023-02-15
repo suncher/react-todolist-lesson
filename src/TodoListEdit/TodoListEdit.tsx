@@ -1,55 +1,105 @@
-import React, { useState } from "react";
+import React, { ChangeEventHandler, useState } from "react";
 import uuid from "react-uuid";
-import { Input, Select, Button, List } from "antd";
+import { Button, List } from "antd";
+import { DeleteOutlined } from "@ant-design/icons/lib/icons";
+import { EditOutlined } from "@ant-design/icons/lib/icons";
+import AddColumn from "./addColumn/AddColumn";
+import AddItem from "./addItem/AddItem";
+import Column from "./Column/Column";
+import ColumnModal from "./ColumnModal/ColumnModal";
+
+
 interface ListItem {
   id: string;
-  label: String;
+  label: string;
+  tasks: string[];
 }
 
 const TodoListEdit = () => {
-  const optionValue: Array<{ value: string; label: string }> = [
-    { value: "todo", label: "To do" },
-    { value: "inProgress", label: "In Progress" },
-    { value: "done", label: "Done" },
-  ];
-  const [tasks, setTasks] = useState<String>("");
-  const [todo, setTodo] = useState<ListItem[]>([]);
-  const [inProgress, setInProgress] = useState<ListItem[]>([]);
-  const [done, setDone] = useState<ListItem[]>([]);
-  const [progressStatus, setProgressStatus] = useState<String>("todo");
-  const handleAddToDoOnClick = () => {
+  const [newColumnOfCategory, setNewColumnOfCategory] = useState<ListItem[]>(
+    []
+  );
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [tasks, setTasks] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const handleOnChangeColumn = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCategory(e.target.value);
+  };
+  const handleOnChangeTasks = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTasks(e.target.value);
+  };
+  const handleOnChangeSelect = (e: string) => {
+    setCategory(e);
+  };
+  const handleAddNewColumn = () => {
     const newItem = {
       id: uuid(),
-      label: tasks,
+      label: category,
+      tasks: [],
     };
-    switch (progressStatus) {
-      case "todo":
-        setTodo([...todo, newItem]);
-        break;
-      case "inProgress":
-        setInProgress([...inProgress, newItem]);
-        break;
-      case "done":
-        setDone([...done, newItem]);
-        break;
-      default:
-        break;
+    newColumnOfCategory.find((categoryCol) => categoryCol.label.trim() === newItem.label.trim())
+      ? alert("This column already exists")
+      : setNewColumnOfCategory([...newColumnOfCategory, newItem]);
+  };
+  const handleAddToListOnClick = () => {
+    let categoryCol = newColumnOfCategory.find(categoryCol => categoryCol.id === category);
+    if (categoryCol) {
+      if (!categoryCol.tasks.find(task => task.trim() === tasks.trim())) {
+        categoryCol.tasks.push(tasks);
+        setNewColumnOfCategory([...newColumnOfCategory]);
+      } else {
+        alert("This task already exists");
+      }
+
     }
   };
+
+  const handleDeleteItem = (categoryColId: string, task: string) => {
+    let categoryCol = newColumnOfCategory.find(
+      (categoryCol) => categoryCol.id === categoryColId
+    );
+    if (categoryCol) {
+      categoryCol.tasks = categoryCol.tasks.filter((tasks) => tasks !== task);
+      setNewColumnOfCategory([...newColumnOfCategory]);
+    }
+  };
+  const handleDeleteColumn = (categoryColId: string) => {
+    setNewColumnOfCategory(
+      newColumnOfCategory.filter((categoryCol) => categoryCol.id !== categoryColId)
+    );
+  };
+  const handleOpenModalEditColumn = () => {
+    console.log("handleOpenModalEditColumn");
+    setIsModalOpen(true);
+  };
+  const handleCloseModalEditColumn = () => {
+    setIsModalOpen(false);
+  };
+
+  
   return (
     <main>
       <section>
-        <div>
-          <Input onChange={(e: any) => setTasks(e.target.value)} />
-          <Select onChange={(e: any) => setProgressStatus(e.target.value)}>
-            {optionValue.map((value) => (
-              <Select.Option value={value.value}>{value.label}</Select.Option>
-            ))}
-          </Select>
-          <Button onClick={handleAddToDoOnClick}>Add to list</Button>
+        <AddColumn handleOnChangeColumn={handleOnChangeColumn} handleAddNewColumn={handleAddNewColumn} />
+        <AddItem handleOnChangeTasks={handleOnChangeTasks} 
+        handleOnChangeSelect={handleOnChangeSelect} 
+        handleAddToListOnClick={handleAddToListOnClick} 
+        newColumnOfCategory={newColumnOfCategory} 
+        />
+        <div style={{ display: "flex" }}>
+          {newColumnOfCategory.map((colCategory) => {
+            return (
+              <div>
+                <Column key={colCategory.id} colCategory={colCategory} handleDeleteColumn={handleDeleteColumn}  handleOpenModalEditColumn={handleOpenModalEditColumn} handleDeleteItem={handleDeleteItem} />
+                <ColumnModal isModalOpen={isModalOpen} />
+              </div>
+            );
+          })}
         </div>
       </section>
+
     </main>
   );
 };
 export default TodoListEdit;
+

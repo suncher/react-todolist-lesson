@@ -1,6 +1,7 @@
 import React, { ChangeEventHandler, useState } from "react";
 import uuid from "react-uuid";
 import { Input, Select, Button, List } from "antd";
+import { DeleteOutlined } from "@ant-design/icons/lib/icons";
 
 interface ListItem {
   id: string;
@@ -94,11 +95,11 @@ const TodoListWithDesign = () => {
                   <List.Item style={{ backgroundColor: "lightgray" }}>
                     {item}{" "}
                     <Button
+                      icon={<DeleteOutlined />}
                       type="primary"
                       danger
                       onClick={() => handleDeleteItem(colCategory.id, item)}
                     >
-                      Supprimer
                     </Button>
                   </List.Item>
                 )}
