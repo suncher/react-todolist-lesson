@@ -6,23 +6,25 @@ interface ColumnProps {
     colCategory: { id: string; label: string; tasks: string[]; };
     handleDeleteItem: (categoryColId: string, task: string) => void;
     handleDeleteColumn: (categoryColId: string) => void;
-    handleOpenModalEditColumn: () => void;
+    openEditColumnModal: () => void;
+    openEditItemModal: () => void;
 }
 
-const Column = ({ colCategory, handleDeleteItem,handleDeleteColumn , handleOpenModalEditColumn}: ColumnProps) => {
+const Column = ({ colCategory, handleDeleteItem,handleDeleteColumn,openEditColumnModal,openEditItemModal }: ColumnProps) => {
     
 
     return (
-        <List   
+        <List  
+            
             header={
                 <Columnheader colCategory={colCategory} 
-                handleOpenModalEditColumn={handleOpenModalEditColumn} 
+                handleOpenEditColumnModal={openEditColumnModal}
                 handleDeleteColumn={handleDeleteColumn} />
             }
             dataSource={colCategory.tasks}
             renderItem={(item) => ( 
                 <List.Item style={{ backgroundColor: "lightgray" }}>
-                    <ColumnItem  colCategory={colCategory} item={item} handleDeleteItem={handleDeleteItem} />
+                    <ColumnItem  colCategory={colCategory} task={item} handleDeleteItem={handleDeleteItem} handleOpenEditItemModal={openEditItemModal} />
                 </List.Item>
             )}
             style={{

@@ -2,6 +2,7 @@ import React , { useState } from 'react'
 import { Button , Input , Modal } from 'antd'
   interface ColumnModalProps {  
     isModalOpen: boolean;
+    
   }
 function ColumnModal({ isModalOpen }: ColumnModalProps) {
   

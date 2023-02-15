@@ -7,6 +7,7 @@ import AddColumn from "./addColumn/AddColumn";
 import AddItem from "./addItem/AddItem";
 import Column from "./Column/Column";
 import ColumnModal from "./ColumnModal/ColumnModal";
+import ItemModal from "./ItemModal/itemModal";
 
 
 interface ListItem {
@@ -16,10 +17,9 @@ interface ListItem {
 }
 
 const TodoListEdit = () => {
-  const [newColumnOfCategory, setNewColumnOfCategory] = useState<ListItem[]>(
-    []
-  );
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [newColumnOfCategory, setNewColumnOfCategory] = useState<ListItem[]>([]);
+  const [isModalEditColumnVisible, setIsModalEditColumnVisible] = useState<boolean>(false);
+  const [isModalEditTaskVisible, setIsModalEditTaskVisible] = useState<boolean>(false);
   const [tasks, setTasks] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const handleOnChangeColumn = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,13 +68,17 @@ const TodoListEdit = () => {
       newColumnOfCategory.filter((categoryCol) => categoryCol.id !== categoryColId)
     );
   };
-  const handleOpenModalEditColumn = () => {
-    console.log("handleOpenModalEditColumn");
-    setIsModalOpen(true);
+
+  //
+  const showEditColumnModal = () => {
+    setIsModalEditColumnVisible(!isModalEditColumnVisible);
   };
-  const handleCloseModalEditColumn = () => {
-    setIsModalOpen(false);
+
+  const showEditItemModal = () => {
+    setIsModalEditTaskVisible(!isModalEditTaskVisible);
   };
+  
+
 
   
   return (
@@ -90,8 +94,9 @@ const TodoListEdit = () => {
           {newColumnOfCategory.map((colCategory) => {
             return (
               <div>
-                <Column key={colCategory.id} colCategory={colCategory} handleDeleteColumn={handleDeleteColumn}  handleOpenModalEditColumn={handleOpenModalEditColumn} handleDeleteItem={handleDeleteItem} />
-                <ColumnModal isModalOpen={isModalOpen} />
+                <Column  key={colCategory.id} colCategory={colCategory} handleDeleteColumn={handleDeleteColumn}  openEditColumnModal={showEditColumnModal} openEditItemModal={showEditItemModal} handleDeleteItem={handleDeleteItem} />
+                <ColumnModal isModalOpen={isModalEditColumnVisible} />
+                <ItemModal isModalOpen={isModalEditTaskVisible} />
               </div>
             );
           })}

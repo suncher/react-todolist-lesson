@@ -1,9 +1,29 @@
-import React from 'react'
-
-function itemModal() {
+import React , { useState } from 'react'
+import { Button , Input , Modal } from 'antd'
+  interface ColumnModalProps {  
+    isModalOpen: boolean;
+  }
+function ItemModal({ isModalOpen }: ColumnModalProps) {
+  console.log(isModalOpen);
   return (
-    <div>itemModal</div>
+    <Modal
+        title="Update Item"
+        open={isModalOpen}
+        onOk={() => {}}
+        onCancel={() => {}}
+        footer={[
+          <Button key="back" onClick={() => {}}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary"  onClick={() => {}}>
+            Update
+          </Button>,
+        ]}
+      >
+        <Input placeholder="Change Data" />
+
+      </Modal>
   )
 }
 
-export default itemModal
+export default ItemModal

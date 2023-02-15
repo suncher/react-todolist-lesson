@@ -4,26 +4,27 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 interface ItemColumn {
     colCategory: { id: string; label: string; tasks: string[]; };
-    item: string;
+    task: string;
     handleDeleteItem: (categoryColId: string, task: string) => void;
+    handleOpenEditItemModal: () => void;
 }
-const ColumnItem = ({ colCategory, item, handleDeleteItem }: ItemColumn) => {
+const ColumnItem = ({ colCategory, task, handleDeleteItem, handleOpenEditItemModal }: ItemColumn) => {
     return (
         <div style={{display:'flex'}}>
             <h5 style={{textAlign: "center"}}>
-                {item}
+                {task}
             </h5>
             <Button
                 icon={<EditOutlined />}
                 type="primary"
-                onClick={() => handleDeleteItem(colCategory.id, item)}
+                onClick={() => handleOpenEditItemModal}
             >
             </Button>
             <Button
                 icon={<DeleteOutlined />}
                 type="primary"
                 danger
-                onClick={() => handleDeleteItem(colCategory.id, item)}
+                onClick={() => handleDeleteItem(colCategory.id, task)}
             >
             </Button>
         </div>
