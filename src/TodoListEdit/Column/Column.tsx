@@ -1,36 +1,50 @@
-import React from 'react'
-import { List } from 'antd'
-import Columnheader from './header/ColumnHeader';
-import ColumnItem from './Item/ColumnItem';
-interface ColumnProps {
-    colCategory: { id: string; label: string; tasks: string[]; };
-    handleDeleteItem: (categoryColId: string, task: string) => void;
-    handleDeleteColumn: (categoryColId: string) => void;
-    handleOpenModalEditColumn: () => void;
+import React from 'react';
+import { List } from 'antd';
+import { Item } from '../TodoListEdit';
+import ItemComp from './Item';
+import Header from './Header';
+
+interface ColumnInterface {
+    value: string;
+    label: string;
+    columnItems: Item[];
+    onDeleteItem(id: string): void;
+    onEditItem(id: string): void;
+    onEditColumn(id: string): void;
+    onDeleteColumn(id: string): void;
 }
 
-const Column = ({ colCategory, handleDeleteItem,handleDeleteColumn , handleOpenModalEditColumn}: ColumnProps) => {
-    
-
+const Column = ({
+    value,
+    label,
+    columnItems,
+    onDeleteItem,
+    onEditItem,
+    onEditColumn,
+    onDeleteColumn,
+}: ColumnInterface) => {
     return (
-        <List   
+        <List
+            className="todo-list-edit-column"
+            key={value}
             header={
-                <Columnheader colCategory={colCategory} 
-                handleOpenModalEditColumn={handleOpenModalEditColumn} 
-                handleDeleteColumn={handleDeleteColumn} />
+                <Header
+                    label={label}
+                    onEditColumn={() => onEditColumn(value)}
+                    onDeleteColumn={() => onDeleteColumn(value)}
+                />
             }
-            dataSource={colCategory.tasks}
-            renderItem={(item) => ( 
-                <List.Item style={{ backgroundColor: "lightgray" }}>
-                    <ColumnItem  colCategory={colCategory} item={item} handleDeleteItem={handleDeleteItem} />
-                </List.Item>
+            dataSource={columnItems}
+            renderItem={({ label: itemLabel, id }) => (
+                <ItemComp
+                    label={itemLabel}
+                    id={id}
+                    onDeleteItem={() => onDeleteItem(id)}
+                    onEditItem={() => onEditItem(id)}
+                />
             )}
-            style={{
-                flex: 1,
-                margin: "8px",
-            }}
         />
-    )
-}
+    );
+};
 
-export default Column
+export default Column;

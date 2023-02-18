@@ -1,34 +1,54 @@
-import React from 'react'
-import { Input, Button, Select } from 'antd'
+import React, { useState } from 'react';
+import { Button, Input, Select } from 'antd';
+import { Column } from '../TodoListEdit';
 
-
-interface handleChange {
-    handleOnChangeTasks: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleOnChangeSelect: (e: string) => void;
-    handleAddToListOnClick: () => void;
-    newColumnOfCategory: { id: string; label: string; tasks: string[]; }[]
+interface AddItemInterface {
+    onClickNewItem(newItemName: string, newItemColumn: string): void;
+    columns: Column[];
 }
 
+const AddItem = ({ onClickNewItem, columns }: AddItemInterface) => {
+    const [newItemName, setNewItemName] = useState<string>('');
+    const [newItemColumn, setNewItemColumn] = useState<string>();
 
+    const handleOnItemNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewItemName(e.target.value);
+    };
 
-const AddItem = ({ handleOnChangeTasks, handleOnChangeSelect, handleAddToListOnClick, newColumnOfCategory }: handleChange) => {
+    const handleOnCategoryChange = (newValue: string) => {
+        setNewItemColumn(newValue);
+    };
+
+    const handleOnClickNewItem = () => {
+        onClickNewItem(newItemName, newItemColumn as string);
+
+        setNewItemName('');
+        setNewItemColumn(undefined);
+    };
+
     return (
-        <div style={{ display: "flex", gap: "8px", padding: "8px" }}>
-            <Input placeholder="Add Tasks" onChange={handleOnChangeTasks} />
+        <div className="todo-list-edit-add-item">
+            <Input
+                placeholder="Item name"
+                onChange={handleOnItemNameChange}
+                value={newItemName}
+            />
+
             <Select
-                placeholder="Select Column"
-                onChange={handleOnChangeSelect}
-                style={{ width: "150px" }}
+                placeholder="Select column"
+                onChange={handleOnCategoryChange}
+                value={newItemColumn}
+                options={columns}
+            />
+
+            <Button
+                disabled={!newItemName?.length || !newItemColumn}
+                onClick={handleOnClickNewItem}
             >
-                {newColumnOfCategory.map(({ id, label }) => (
-                    <Select.Option key={id} value={id}>{label}</Select.Option>
-                ))}
-            </Select>
-            <Button type="primary" onClick={handleAddToListOnClick}>
-                Add To List
+                Add Item
             </Button>
         </div>
-    )
-}
+    );
+};
 
-export default AddItem
+export default AddItem;
