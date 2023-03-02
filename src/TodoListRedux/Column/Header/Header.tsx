@@ -1,33 +1,37 @@
-import { CloseOutlined, EditOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
-import React from 'react';
+import { CloseOutlined, EditOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+
+import { useDispatch } from "react-redux";
+import { removeColumn, updateColumn } from "../../features/ColumnReducer";
 
 interface HeaderInterface {
-    label: string;
-
+  label: string;
+  value: string;
 }
 
-const Header = ({ label}: HeaderInterface) => {
-    return (
-        <div style={{display:'flex'}}>
-            {label}
+const Header = ({ label, value }: HeaderInterface) => {
+  const dispatch = useDispatch();
 
-            <Button
-                type="primary"
-                size="small"
-                icon={<EditOutlined />}
-                onClick={() => {}}
-            />
+  return (
+    <div className="todo-list-column-header">
+      {label}
 
-            <Button
-                type="primary"
-                danger
-                size="small"
-                icon={<CloseOutlined />}
-                onClick={() => {}}
-            />
-        </div>
-    );
+      <Button
+        type="primary"
+        size="small"
+        icon={<EditOutlined />}
+        onClick={() => dispatch(updateColumn(value))}
+      />
+
+      <Button
+        type="primary"
+        danger
+        size="small"
+        icon={<CloseOutlined />}
+        onClick={() => dispatch(removeColumn(value))}
+      />
+    </div>
+  );
 };
 
 export default Header;

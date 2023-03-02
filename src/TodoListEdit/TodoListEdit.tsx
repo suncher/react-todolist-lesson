@@ -1,29 +1,18 @@
 import React, { ChangeEventHandler, useState } from "react";
 import uuid from "react-uuid";
-import { Button, List } from "antd";
+import { Input, Select, Button, List } from "antd";
 import { DeleteOutlined } from "@ant-design/icons/lib/icons";
-import { EditOutlined } from "@ant-design/icons/lib/icons";
-import AddColumn from "./addColumn/AddColumn";
-import AddItem from "./addItem/AddItem";
-import Column from "./Column/Column";
-import ColumnModal from "./ColumnModal/ColumnModal";
 
-export interface Column {
-    value: string;
-    label: string;
-}
-
-export interface Item {
-    id: string;
-    columnId: string;
-    label: string;
+interface ListItem {
+  id: string;
+  label: string;
+  tasks: string[];
 }
 
 const TodoListEdit = () => {
   const [newColumnOfCategory, setNewColumnOfCategory] = useState<ListItem[]>(
     []
   );
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [tasks, setTasks] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const handleOnChangeColumn = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,19 +30,22 @@ const TodoListEdit = () => {
       label: category,
       tasks: [],
     };
-
-    const handleOnDeleteColumn = (idToRemove: string) => {
-        setColumns(columns.filter(({ value }) => value !== idToRemove));
-        setItems(items.filter(({ columnId }) => columnId !== idToRemove));
-    };
-
-    const handleOnEditItem = (idItem: string) => {
-        const item = items.find(({ id }) => id === idItem);
-
-        if (item) {
-            setItemModal(item);
-        }
-    };
+    newColumnOfCategory.find((categoryCol) => categoryCol.label.trim() === newItem.label.trim())
+      ? alert("This column already exists")
+      : setNewColumnOfCategory([...newColumnOfCategory, newItem]);
+  };
+  const handleAddToListOnClick = () => {
+    let categoryCol = newColumnOfCategory.find(categoryCol => categoryCol.id === category);
+    if (categoryCol) {
+      if(!categoryCol.tasks.find(task => task.trim() === tasks.trim())) {
+        categoryCol.tasks.push(tasks);
+        setNewColumnOfCategory([...newColumnOfCategory]);
+      } else {
+        alert("This task already exists");
+      }
+      
+    }
+  };
 
   const handleDeleteItem = (categoryColId: string, task: string) => {
     let categoryCol = newColumnOfCategory.find(
@@ -64,43 +56,63 @@ const TodoListEdit = () => {
       setNewColumnOfCategory([...newColumnOfCategory]);
     }
   };
-  const handleDeleteColumn = (categoryColId: string) => {
-    setNewColumnOfCategory(
-      newColumnOfCategory.filter((categoryCol) => categoryCol.id !== categoryColId)
-    );
-  };
-  const handleOpenModalEditColumn = () => {
-    console.log("handleOpenModalEditColumn");
-    setIsModalOpen(true);
-  };
-  const handleCloseModalEditColumn = () => {
-    setIsModalOpen(false);
-  };
-
-  
   return (
     <main>
       <section>
-        <AddColumn handleOnChangeColumn={handleOnChangeColumn} handleAddNewColumn={handleAddNewColumn} />
-        <AddItem handleOnChangeTasks={handleOnChangeTasks} 
-        handleOnChangeSelect={handleOnChangeSelect} 
-        handleAddToListOnClick={handleAddToListOnClick} 
-        newColumnOfCategory={newColumnOfCategory} 
-        />
+        <div style={{ display: "flex", gap: "8px", padding: "8px" }}>
+          <Input placeholder="Add Column" onChange={handleOnChangeColumn} />
+          <Button type="primary" onClick={handleAddNewColumn}>
+            Add Column
+          </Button>
+        </div>
+        <div style={{ display: "flex", gap: "8px", padding: "8px" }}>
+          <Input placeholder="Add Tasks" onChange={handleOnChangeTasks} />
+          <Select
+            placeholder="Select Column"
+            onChange={handleOnChangeSelect}
+            style={{ width: "150px" }}
+          >
+            {newColumnOfCategory.map(({ id, label }) => (
+              <Select.Option value={id}>{label}</Select.Option>
+            ))}
+          </Select>
+          <Button type="primary" onClick={handleAddToListOnClick}>
+            Add To List
+          </Button>
+        </div>
         <div style={{ display: "flex" }}>
           {newColumnOfCategory.map((colCategory) => {
             return (
-              <div>
-                <Column key={colCategory.id} colCategory={colCategory} handleDeleteColumn={handleDeleteColumn}  handleOpenModalEditColumn={handleOpenModalEditColumn} handleDeleteItem={handleDeleteItem} />
-                <ColumnModal isModalOpen={isModalOpen} />
-              </div>
+              <List
+                key={colCategory.id}
+                header={
+                  <h3 style={{ fontWeight: "bold", textAlign: "center" }}>
+                    {colCategory.label}
+                  </h3>
+                }
+                dataSource={colCategory.tasks}
+                renderItem={(item) => (
+                  <List.Item style={{ backgroundColor: "lightgray" }}>
+                    {item}{" "}
+                    <Button
+                      icon={<DeleteOutlined />}
+                      type="primary"
+                      danger
+                      onClick={() => handleDeleteItem(colCategory.id, item)}
+                    >
+                    </Button>
+                  </List.Item>
+                )}
+                style={{
+                  flex: 1,
+                  margin: "8px",
+                }}
+              />
             );
           })}
         </div>
       </section>
-
     </main>
   );
 };
-
 export default TodoListEdit;

@@ -1,7 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import ColumnReducer from '../TodoListRedux/features/Column/ColumnSlice';
-export const store = configureStore({
+import { configureStore } from "@reduxjs/toolkit";
+import ColumnSlice from "../TodoListRedux/features/ColumnReducer";
+
+const store = configureStore({
   reducer: {
-    column: ColumnReducer
+    reduxColumn: ColumnSlice,
   },
 });
+
+export default store;

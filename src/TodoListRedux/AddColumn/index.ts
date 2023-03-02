@@ -1,1 +1,1 @@
-import AddColumn from './AddColumn';
+import AddColumn from "./AddColumn";
